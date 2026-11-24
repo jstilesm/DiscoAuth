@@ -9,7 +9,7 @@ import { Socks5ProxyAgent } from 'undici';
 const fastify = Fastify({
   logger: true
 })
-const socksDispatcher = process.env.ALL_PROXY ? new Socks5ProxyAgent('socks5h://batchmate-tailnet-proxy:1055') : undefined
+const socksDispatcher = process.env.ALL_PROXY ? new Socks5ProxyAgent(process.env.ALL_PROXY) : undefined
 
 
 // Declare a route
