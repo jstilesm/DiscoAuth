@@ -24,9 +24,9 @@ fastify.listen({ host: '0.0.0.0', port: 3000 }, function (err, address) {
 
 fastify.register(fastifyCookie);
 fastify.register(fastifySession, {
-    secret: 'jlrQnpljnc4YZ7Sip2tbjykG1pxe2m0j6GHpJoWGKrk',
+    secret: process.env.SESSION_SECRET,
     cookie: {
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         sameSite: 'lax'
     },
@@ -37,8 +37,8 @@ fastify.register(fastifyOauth2, {
   name: 'batchmateOAuth2',
   credentials: {
     client: {
-      id: 'svc_f1885ef29f35d14fe7c6b68cb6c397f7',
-      secret: 'UfG3fMRi_swHWYVK4e1f3mIGi2CRK7QfNV44n3NQG2E'
+      id: process.env.OAUTH_ID,
+      secret: process.env.OAUTH_SECRET
     },
     auth: { tokenHost: 'https://batchmate.id', tokenPath: '/oauth/token', 
             authorizeHost: 'https://batchmate.id', authorizePath: '/oauth/authorize'}
@@ -66,7 +66,7 @@ fastify.get('/login/callback', async function (request, reply) {
 
 fastify.register(function protectedProxyScope(instance) {
     // Enforce session check on all routes inside this scope
-    instance.addHook('preHandler', (request, reply) => {
+    instance.addHook('preHandler', async (request, reply) => {
         if (!request.session.authenticated) {
             return reply.code(401).send({error: 'Unauthorized'});
         }
