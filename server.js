@@ -3,10 +3,14 @@ import fastifyOauth2 from '@fastify/oauth2'
 import fastifyCookie from '@fastify/cookie'
 import fastifyHttpProxy from '@fastify/http-proxy'
 import fastifySession from '@fastify/session'
+import { Socks5ProxyAgent } from 'undici';
+
 
 const fastify = Fastify({
   logger: true
 })
+const socksDispatcher = process.env.ALL_PROXY ? new Socks5ProxyAgent('socks5h://batchmate-tailnet-proxy:1055') : undefined
+
 
 // Declare a route
 fastify.get('/', function (request, reply) {
@@ -73,6 +77,7 @@ fastify.register(function protectedProxyScope(instance) {
     })
     instance.register(fastifyHttpProxy, {
         upstream: 'http://plotpi.ts.batchmate.cloud:8889/cam',
-        prefix: '/cam'
+        prefix: '/cam',
+        undici: socksDispatcher
     })
 });
