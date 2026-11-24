@@ -46,7 +46,7 @@ fastify.register(fastifyOauth2, {
   // register a fastify url to start the redirect flow to the service provider's OAuth2 login
   startRedirectPath: '/login',
   // service provider redirects here after user login
-  callbackUri: 'http://localhost:3000/login/callback'
+  callbackUri: process.env.SESSION_URL
   // You can also define callbackUri as a function that takes a FastifyRequest and returns a string
   // callbackUri: req => `${req.protocol}://${req.hostname}/login/facebook/callback`,
 })
